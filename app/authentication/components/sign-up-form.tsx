@@ -1,6 +1,12 @@
 "use client";
 
 import { Controller, useForm } from "react-hook-form";
+import { authClient } from "@/app/lib/auth-client";
+import { useRouter } from "next/navigation";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -9,27 +15,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Field, FieldError, FieldGroup } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
-
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import {
   EyeIcon,
   EyeOffIcon,
+  Loader,
   LockIcon,
   MailIcon,
   UserIcon,
@@ -54,6 +50,7 @@ const registerSchema = z.object({
 });
 
 const SignUp = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -65,8 +62,23 @@ const SignUp = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof registerSchema>) {
-    console.log(JSON.stringify(data, null, 2));
+  async function onSubmit(data: z.infer<typeof registerSchema>) {
+    try {
+      await authClient.signUp.email(
+        {
+          email: data.email,
+          password: data.password,
+          name: data.name,
+        },
+        {
+          onSuccess: (user) => {
+            router.push("/dashboard");
+          },
+        },
+      );
+    } catch (error) {
+      console.error("Sign-up error:", error);
+    }
   }
 
   return (
@@ -164,8 +176,16 @@ const SignUp = () => {
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
           </Button>
-          <Button type="submit" form="register-form">
-            Submit
+          <Button
+            type="submit"
+            form="register-form"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? (
+              <Loader className="h-4 w-4 animate-spin" />
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </Field>
       </CardFooter>

@@ -1,6 +1,5 @@
 import { relations } from "drizzle-orm";
 import {
-  date,
   integer,
   pgEnum,
   pgTable,
@@ -177,7 +176,7 @@ export const appointmentsTableRelations = relations(
   }),
 );
 
-export const session = pgTable(
+export const sessionsTable = pgTable(
   "sessions",
   {
     id: text("id").primaryKey(),
@@ -196,7 +195,7 @@ export const session = pgTable(
   (table) => [index("session_userId_idx").on(table.userId)],
 );
 
-export const account = pgTable(
+export const accountsTable = pgTable(
   "accounts",
   {
     id: text("id").primaryKey(),
@@ -220,7 +219,7 @@ export const account = pgTable(
   (table) => [index("account_userId_idx").on(table.userId)],
 );
 
-export const verification = pgTable(
+export const verificationsTable = pgTable(
   "verifications",
   {
     id: text("id").primaryKey(),
@@ -237,20 +236,20 @@ export const verification = pgTable(
 );
 
 export const userRelations = relations(usersTable, ({ many }) => ({
-  sessions: many(session),
-  accounts: many(account),
+  sessions: many(sessionsTable),
+  accounts: many(accountsTable),
 }));
 
-export const sessionRelations = relations(session, ({ one }) => ({
+export const sessionRelations = relations(sessionsTable, ({ one }) => ({
   user: one(usersTable, {
-    fields: [session.userId],
+    fields: [sessionsTable.userId],
     references: [usersTable.id],
   }),
 }));
 
-export const accountRelations = relations(account, ({ one }) => ({
+export const accountRelations = relations(accountsTable, ({ one }) => ({
   user: one(usersTable, {
-    fields: [account.userId],
+    fields: [accountsTable.userId],
     references: [usersTable.id],
   }),
 }));
