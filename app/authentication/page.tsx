@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LockIcon, UserPlusIcon } from "lucide-react";
 import SignUp from "./components/sign-up-form";
-import SignIn from "./components/sign-in-form";
+import SignIn from "./components/login-form";
 
 const AuthenticationPage = () => {
   return (

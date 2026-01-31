@@ -30,10 +30,14 @@ import { useState } from "react";
 import {
   EyeIcon,
   EyeOffIcon,
+  Loader2,
   LockIcon,
   MailIcon,
   UserIcon,
 } from "lucide-react";
+import { authClient } from "@/app/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z
@@ -53,6 +57,7 @@ const loginSchema = z.object({
 });
 
 const SignIn = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -63,8 +68,21 @@ const SignIn = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof loginSchema>) {
-    console.log(JSON.stringify(data, null, 2));
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: (data) => {
+          router.push("/dashboard");
+        },
+        onError: (error) => {
+          toast.error("Invalid credentials. Please try again.");
+        },
+      },
+    );
   }
 
   return (
@@ -141,8 +159,16 @@ const SignIn = () => {
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Reset
           </Button>
-          <Button type="submit" form="register-form">
-            Submit
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting}
+            form="register-form"
+          >
+            {form.formState.isSubmitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Login"
+            )}
           </Button>
         </Field>
       </CardFooter>

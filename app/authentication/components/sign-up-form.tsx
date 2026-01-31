@@ -30,6 +30,7 @@ import {
   MailIcon,
   UserIcon,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const registerSchema = z.object({
   name: z.string().trim().min(1, "Name is required."),
@@ -73,6 +74,19 @@ const SignUp = () => {
         {
           onSuccess: (user) => {
             router.push("/dashboard");
+          },
+          onError(context) {
+            console.log("Sign-up error context:", context.error.code);
+            if (
+              context.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"
+            ) {
+              toast.error("E-mail already in use. Please use another e-mail.");
+              return;
+            }
+
+            toast.error(
+              context.error.message || "An error occurred during sign-up.",
+            );
           },
         },
       );
