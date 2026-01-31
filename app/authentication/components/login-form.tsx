@@ -38,6 +38,7 @@ import {
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Separator } from "@/components/ui/separator";
 
 const loginSchema = z.object({
   email: z
@@ -84,6 +85,10 @@ const SignIn = () => {
       },
     );
   }
+
+  const handleGoogleLogin = async () => {
+    authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
+  };
 
   return (
     <Card>
@@ -155,22 +160,35 @@ const SignIn = () => {
         </form>
       </CardContent>
       <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
-          </Button>
-          <Button
-            type="submit"
-            disabled={form.formState.isSubmitting}
-            form="register-form"
+        <div className="flex w-full flex-col space-y-6">
+          <Field
+            orientation="horizontal"
+            className="flex items-end justify-end"
           >
-            {form.formState.isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              "Login"
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => form.reset()}
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              disabled={form.formState.isSubmitting}
+              form="register-form"
+            >
+              {form.formState.isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Login"
+              )}
+            </Button>
+          </Field>
+          <Separator />
+          <Button type="button" onClick={handleGoogleLogin}>
+            Sign in with Google
           </Button>
-        </Field>
+        </div>
       </CardFooter>
     </Card>
   );
