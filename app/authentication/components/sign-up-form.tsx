@@ -72,7 +72,7 @@ const SignUp = () => {
           name: data.name,
         },
         {
-          onSuccess: (user) => {
+          onSuccess: () => {
             router.push("/dashboard");
           },
           onError(context) {
