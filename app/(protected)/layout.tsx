@@ -21,7 +21,7 @@ const ProtectedDashboard = ({ children }: { children: React.ReactNode }) => {
               />
             </div>
           </header>
-          <div className="px-4 py-2">{children}</div>
+          <main className="w-full">{children}</main>
         </SidebarInset>
       </SidebarProvider>
     </>
