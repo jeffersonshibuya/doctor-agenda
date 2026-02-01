@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/sidebar";
 import { authClient } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function NavUser() {
   const router = useRouter();
@@ -49,10 +50,17 @@ export function NavUser() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </div>
               ) : (
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user?.name}</span>
-                  <span className="truncate text-xs">{user?.email}</span>
-                </div>
+                <>
+                  <Avatar>
+                    <AvatarFallback>J</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {user?.clinic.name}
+                    </span>
+                    <span className="truncate text-xs">{user?.email}</span>
+                  </div>
+                </>
               )}
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
