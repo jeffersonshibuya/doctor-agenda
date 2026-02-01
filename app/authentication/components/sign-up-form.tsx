@@ -76,7 +76,6 @@ const SignUp = () => {
             router.push("/dashboard");
           },
           onError(context) {
-            console.log("Sign-up error context:", context.error.code);
             if (
               context.error.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"
             ) {
